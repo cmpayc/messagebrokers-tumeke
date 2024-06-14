@@ -25,7 +25,7 @@ setup(
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     test_suite='',
-    install_requires=['aiokafka=0.7.0', 'aio-pika=9.3.1'],
+    install_requires=['aiokafka==0.7.0', 'aio-pika==9.3.1'],
     keywords='',
     classifiers=[
         'Programming Language :: Python',
