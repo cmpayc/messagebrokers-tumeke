@@ -1,6 +1,6 @@
 from aio_pika import DeliveryMode, ExchangeType, Message, connect_robust, connect
 from aio_pika.abc import AbstractIncomingMessage
-from executor import Executor
+from .executor import Executor
 from json import loads, dumps
 import asyncio
 import traceback
