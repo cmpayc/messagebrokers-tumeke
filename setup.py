@@ -2,8 +2,8 @@ import re
 from setuptools import setup, find_packages
 
 # Load version from module (without loading the whole module)
-with open('pyproject.toml', 'r') as fo:
-    version = re.search(r'^version\s*=\s*[\'"]([^\'"]*)[\'"]',
+with open('src/messagebrokerstumeke/__init__.py', 'r') as fo:
+    version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fo.read(), re.MULTILINE).group(1)
 
 # Read in the README.md for the long description.
@@ -25,7 +25,7 @@ setup(
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     test_suite='',
-    install_requires=[],
+    install_requires=['aiokafka=0.7.0', 'aio-pika=9.3.1'],
     keywords='',
     classifiers=[
         'Programming Language :: Python',

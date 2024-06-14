@@ -1,2 +1,9 @@
-import os 
-dir_path = os.path.dirname(os.path.realpath(__file__))
+from kafka import Kafka
+from rabbitmq import Rabbitmq
+
+__version__ = "0.1.0"
+
+__all__ = (
+    "Kafka",
+    "Rabbitmq",
+)
