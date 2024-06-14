@@ -22,7 +22,6 @@ class Rabbitmq():
         self.events = events
     
     async def start(self, loop, topics, is_video=False):
-        print("START RABBIT MQ", self.url)
         self.topics = [self.topic_prefix+t for t in topics]
         self.group_id = self.topic_prefix+'compute'
         self.loop = loop
@@ -56,6 +55,7 @@ class Rabbitmq():
             await self.queue.bind(self.topics_exchange, routing_key=topic)
             print("Topic binded: " + str(topic), flush=True)
 
+        print("Entered while loop", flush=True)
         await self.queue.consume(self.on_message, no_ack=False)
 
         await asyncio.Future()
@@ -66,10 +66,6 @@ class Rabbitmq():
             processed_topic = company.kafka_prefix + topic
 
         event = self.events[topic]["serializer"](tup)
-
-        print("WTFEVENT", event)
-        print("WTFEVENT2", dumps(event))
-        print("WTFEVENT3", processed_topic)
 
         connection = await connect(self.url)
 
@@ -88,9 +84,7 @@ class Rabbitmq():
                 delivery_mode=DeliveryMode.PERSISTENT,
             )
 
-            print("PUBLISH!!!")
             await logs_exchange.publish(message, routing_key=processed_topic)
-            print("PUBLISHED!!!")
 
             await connection.close()
 
@@ -112,36 +106,28 @@ class Rabbitmq():
 
     async def on_message(self, message: AbstractIncomingMessage) -> None:
         async with message.process(ignore_processed=True):
-            print(f" [x] {message.routing_key!r}:{message.body!r}")
+            print(f"Pulled event: {message.routing_key!r}", flush=True)
 
             processed_topic = message.routing_key
 
             processed_topic = processed_topic[len(self.topic_prefix):]
             eventProcessor = self.events[processed_topic]["event_processor"]
 
-            print("MESSAGE BODY", message.body)
-
             out_topic = None
             out_val = None
             with_prefix = None
             try:
                 payload = JsonPayload(message.body, processed_topic)
-                print("JSON", processed_topic, payload.value)
                 self.executor.run(eventProcessor, payload)
                 await self.done_processing.wait()
                 self.done_processing.clear()
                 out_topic, out_val, with_prefix = self.executor.result()
             except Exception as e:
-                print("AZAZAZ")
                 str1 = traceback.format_exc()
                 errorMsg = str(e)
                 errorTraceback = str1
                 payload = JsonPayload("{}".encode(), processed_topic)
-                print("PAYLOAD", payload.value)
                 out_topic, out_val, with_prefix = self.put_fail(payload, errorMsg, errorTraceback)
-            
-
-            print("COMPLETE", out_topic, out_val, with_prefix)
 
             if out_topic:
                 if (with_prefix):
@@ -155,6 +141,8 @@ class Rabbitmq():
                 print(f'published {out_topic} {out_val}', flush=True)
 
             await message.ack()
+
+            print("Entered while loop", flush=True)
 
     def done(self):
        self.done_processing.set()

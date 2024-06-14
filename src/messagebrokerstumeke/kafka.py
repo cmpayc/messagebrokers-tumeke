@@ -74,7 +74,6 @@ class Kafka():
         )
 
     async def start(self, loop, topics, is_video=False):
-        print("START KAFKA")
         self.topics = [self.topic_prefix+t for t in topics]
         self.group_id = self.topic_prefix+'compute'
         self.loop = loop
