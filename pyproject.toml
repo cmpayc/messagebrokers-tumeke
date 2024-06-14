@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "messagebrokers-tumeke"
+name = "messagebrokerstumeke"
 version = "0.0.1"
 description = "Kafka and RabbitMQ classes"
 authors = ["Sergei Kazakov <kazakov.s.fl@gmail.com>"]

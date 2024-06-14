@@ -13,7 +13,7 @@ with open('README.md') as fo:
     description = "Kafka and RabbitMQ message brokers"
 
 setup(
-    name='messagebrokers-tumeke',
+    name='messagebrokerstumeke',
     version=version,
     url='https://github.com/tumeke-tech/messagebrokers-tumeke',
     author='Sergei Kazakov',
