@@ -1,7 +1,7 @@
 from aiokafka import AIOKafkaConsumer, AIOKafkaProducer, ConsumerRebalanceListener, TopicPartition
 from datetime import datetime
-from executor import Executor
 from json import loads, dumps
+from .executor import Executor
 import asyncio
 import logging
 import random
